@@ -15,29 +15,29 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.fmudanyali;
+package com.fmudanyali.scenes;
 
+import com.fmudanyali.FileLoader;
+import com.fmudanyali.Keyboard;
+import com.fmudanyali.Main;
+import com.fmudanyali.Render;
+import com.fmudanyali.Time;
 import com.sun.jna.ptr.IntByReference;
 
 import org.libsdl.api.render.*;
-import org.libsdl.api.video.SDL_Window;
 import org.libsdl.api.surface.SDL_Surface;
 import org.libsdl.api.rect.SDL_Rect;
-import org.libsdl.api.event.events.SDL_Event;
 
 import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.surface.SdlSurface.*;
-import static org.libsdl.api.video.SDL_WindowFlags.*;
 import static org.libsdl.api.video.SdlVideo.*;
-import static org.libsdl.api.SDL_SubSystem.*;
 import static org.libsdl.api.Sdl.*;
 import static org.libsdl.api.scancode.SDL_Scancode.*;
-//import static org.libsdl.api.error.SdlError.*;
 import static org.libsdl.api.event.SdlEvents.*;
+import static com.fmudanyali.Render.*;
+import static org.libsdl.api.keycode.SDL_Keycode.*;
 
-public class Game {
-    public static SDL_Window window;
-    public static SDL_Renderer renderer;
+public class Game extends Scene {
     public static SDL_Texture texture, background, wallpaper, player;
     public static SDL_Surface textureSurface = new SDL_Surface();
 
@@ -45,28 +45,14 @@ public class Game {
     public static SDL_Rect canvas = new SDL_Rect();
     public static SDL_Rect playerPos = new SDL_Rect();
 
-    public static SDL_Event e = new SDL_Event();
     public static boolean exit = false;
-
-    public static int WIDTH = 960;
-    public static int HEIGHT = 540;
     public static int speed;
+    public static boolean escPressed = false;
 
     public static IntByReference bgwptr = new IntByReference();
     public static IntByReference bghptr = new IntByReference();
 
-    public static void initialize() throws Exception{
-        // Initialize SDL
-        SDL_Init(SDL_INIT_VIDEO);
-        // Create Window
-        window = SDL_CreateWindow("SDL Java Test",
-            SDL_WINDOWPOS_CENTERED(), SDL_WINDOWPOS_CENTERED(),
-            WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
-        
-        // Create Renderer
-        renderer = SDL_CreateRenderer(window, -1,
-            SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-
+    public Game() throws Exception{
         // Create surface to load BMP into
         textureSurface = SDL_LoadBMP(FileLoader.getFilePath("image.bmp"));
         // Create texture from the surface
@@ -82,7 +68,6 @@ public class Game {
         // Create a background double the width of the texture, used for scrolling animation
         background = Render.createBackgroundFromTexture(renderer, texture, 12, 30);
         SDL_QueryTexture(background, null, null, bgwptr, bghptr);
-        System.out.printf("Background: %dx%d%n", bgwptr.getValue(), bghptr.getValue());
 
         // Dimensions of the viewport, its x and y is used for positioning
         viewport.x = viewport.y = 0;
@@ -92,60 +77,67 @@ public class Game {
         canvas.y = (HEIGHT - canvas.h)/2;
         playerPos.x = playerPos.y = viewport.w - 16;
         playerPos.w = playerPos.h = 32;
-        System.out.printf("BG Res: %dx%d%n", bgwptr.getValue(), bghptr.getValue());
     }
 
-    public static void loop(){
-        while(!exit){
-            Time.Tick();
-
-            while(SDL_PollEvent(e) != 0){
-                switch(e.type){
-                    case SDL_QUIT:
-                        exit = true;
-                        break;
-                    case SDL_KEYDOWN:
+    @Override
+    public void loop(){
+        while(SDL_PollEvent(Main.e) != 0){
+            switch(Main.e.type){
+                case SDL_QUIT:
+                    Main.exit = true;
                     break;
-                }
+                case SDL_KEYDOWN:
+                    switch(Main.e.key.keysym.sym){
+                        case SDLK_ESCAPE:
+                            if(!escPressed){
+                                Main.scenes.push(new PauseMenu());
+                                escPressed = true;
+                            }
+                            break;
+                    }
+                    break;
+                case SDL_KEYUP:
+                    switch(Main.e.key.keysym.sym){
+                        case SDLK_ESCAPE:
+                            escPressed = false;
+                            break;
+                    }
+                    break;
             }
-
-            Keyboard.getKeyboardState();
-
-            if(Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
-                speed = 1;
-            }else{
-                speed = 2;
-            }
-
-            if(Keyboard.getKeyState(SDL_SCANCODE_A) | Keyboard.getKeyState(SDL_SCANCODE_LEFT)){
-                playerPos.x = Math.max(playerPos.x - (int)(speed * Time.deltaTime * 0.1), canvas.x);
-            }
-            if(Keyboard.getKeyState(SDL_SCANCODE_D) | Keyboard.getKeyState(SDL_SCANCODE_RIGHT)){
-                playerPos.x = Math.min(playerPos.x + (int)(speed * Time.deltaTime * 0.1), canvas.x + canvas.w - 32);
-            }
-            if(Keyboard.getKeyState(SDL_SCANCODE_W) | Keyboard.getKeyState(SDL_SCANCODE_UP)){
-                playerPos.y = Math.max(playerPos.y - (int)(speed * Time.deltaTime * 0.1), canvas.y);
-            }
-            if(Keyboard.getKeyState(SDL_SCANCODE_S) | Keyboard.getKeyState(SDL_SCANCODE_DOWN)){
-                playerPos.y = Math.min(playerPos.y + (int)(speed * Time.deltaTime * 0.1), canvas.y + canvas.h - 32);
-            }
-
-            viewport.y = Math.floorMod(viewport.y - (int)(Time.deltaTime * 0.1), bghptr.getValue() - canvas.h);
-
-            SDL_RenderClear(renderer);
-            SDL_RenderCopy(renderer, wallpaper, null, null);
-            SDL_RenderCopy(renderer, background, viewport, canvas);
-            SDL_RenderCopy(renderer, player, null, playerPos);
-            SDL_RenderPresent(renderer);
-
-            //System.out.printf("%d,%d%n", viewport.x, viewport.y);
         }
+
+        if(Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
+            speed = 1;
+        }else{
+            speed = 2;
+        }
+
+        if(Keyboard.getKeyState(SDL_SCANCODE_A) | Keyboard.getKeyState(SDL_SCANCODE_LEFT)){
+            playerPos.x = Math.max(playerPos.x - (int)(speed * Time.deltaTime * 0.1), canvas.x);
+        }
+        if(Keyboard.getKeyState(SDL_SCANCODE_D) | Keyboard.getKeyState(SDL_SCANCODE_RIGHT)){
+            playerPos.x = Math.min(playerPos.x + (int)(speed * Time.deltaTime * 0.1), canvas.x + canvas.w - 32);
+        }
+        if(Keyboard.getKeyState(SDL_SCANCODE_W) | Keyboard.getKeyState(SDL_SCANCODE_UP)){
+            playerPos.y = Math.max(playerPos.y - (int)(speed * Time.deltaTime * 0.1), canvas.y);
+        }
+        if(Keyboard.getKeyState(SDL_SCANCODE_S) | Keyboard.getKeyState(SDL_SCANCODE_DOWN)){
+            playerPos.y = Math.min(playerPos.y + (int)(speed * Time.deltaTime * 0.1), canvas.y + canvas.h - 32);
+        }
+
+        viewport.y = Math.floorMod(viewport.y - (int)(Time.deltaTime * 0.1), bghptr.getValue() - canvas.h);
+
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, wallpaper, null, null);
+        SDL_RenderCopy(renderer, background, viewport, canvas);
+        SDL_RenderCopy(renderer, player, null, playerPos);
+        SDL_RenderPresent(renderer);
     }
     
     public static void quit(){
         SDL_DestroyTexture(texture);
         SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
+        SDL_DestroyWindow(Render.window);
         SDL_Quit();
     }
 }

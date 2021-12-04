@@ -15,16 +15,8 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.fmudanyali;
+package com.fmudanyali.scenes;
 
-public class Test {
-    public static void main(String[] args) throws Exception{
-        if (RestartJVM.restartJVM()) {
-            return;
-        }
-
-        Game.initialize();
-        Game.loop();
-        Game.quit();
-    }
+public class MainMenu extends Scene {
+    
 }
