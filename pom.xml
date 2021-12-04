@@ -17,24 +17,12 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
-    
-    <repositories>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>5.9.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.FMudanyali</groupId>
+            <groupId>io.github.libjsdl</groupId>
             <artifactId>libjsdl</artifactId>
-            <version>bc8bf9cadff56fb55aa50e86f96f6548007c0a3e</version>
+            <version>2.0.14-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
