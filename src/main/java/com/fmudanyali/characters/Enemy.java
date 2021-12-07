@@ -15,8 +15,8 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.fmudanyali.scenes;
+package com.fmudanyali.characters;
 
-public class MainMenu extends Scene {
-    public void loop(){};
+public class Enemy extends Character {
+    
 }

@@ -30,6 +30,7 @@ public class Main {
             return;
         }
 
+        Screen.init();
         scenes.push(new Game());
 
         while(!scenes.empty() && !exit){

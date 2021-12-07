@@ -17,17 +17,6 @@
 
 package com.fmudanyali.scenes;
 
-import com.fmudanyali.Render;
-
-import org.libsdl.api.render.SDL_Renderer;
-
-import static org.libsdl.api.Sdl.*;
-import static org.libsdl.api.render.SdlRender.*;
-import static org.libsdl.api.SDL_SubSystem.*;
-
-public class Scene {
-    public static SDL_Renderer renderer = 
-        SDL_CreateRenderer(Render.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    
-    public void loop(){};
+public abstract class Scene {
+    public abstract void loop();
 }

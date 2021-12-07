@@ -15,8 +15,14 @@
  *   along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.fmudanyali.scenes;
+package com.fmudanyali.characters;
 
-public class MainMenu extends Scene {
-    public void loop(){};
+import org.libsdl.api.rect.SDL_Rect;
+import org.libsdl.api.render.SDL_Texture;
+import org.libsdl.api.surface.SDL_Surface;
+
+public class Character {
+    public SDL_Rect position = new SDL_Rect();
+    public SDL_Texture texture = new SDL_Texture();
+    public SDL_Surface tempSurface = new SDL_Surface();
 }

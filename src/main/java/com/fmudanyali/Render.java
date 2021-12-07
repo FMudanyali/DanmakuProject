@@ -28,14 +28,17 @@ import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.pixels.SDL_PixelFormatEnum.*;
 import static org.libsdl.api.video.SDL_WindowFlags.*;
 import static org.libsdl.api.video.SdlVideo.*;
+import static com.fmudanyali.Screen.*;
 
 public class Render {
-    public static int WIDTH = 960;
-    public static int HEIGHT = 540;
-
     public static SDL_Window window = SDL_CreateWindow("SDL Java Test",
         SDL_WINDOWPOS_CENTERED(), SDL_WINDOWPOS_CENTERED(),
         WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    
+    public static SDL_Renderer renderer = 
+        SDL_CreateRenderer(Render.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    public static int bgw, bgh;
 
     public static SDL_Texture createBackgroundFromTexture(
         SDL_Renderer renderer, SDL_Texture texture, int cols, int rows
@@ -54,8 +57,8 @@ public class Render {
         // Remove the pointers
         txwptr = txhptr = null;
         // Calculate background resolution
-        int bgw = txw * cols;
-        int bgh = txh * rows;
+        bgw = txw * cols;
+        bgh = txh * rows;
         // Create background texture
         SDL_Texture background = SDL_CreateTexture(
             renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, bgw, bgh);

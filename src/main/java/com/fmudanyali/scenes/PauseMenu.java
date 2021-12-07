@@ -18,7 +18,7 @@
 package com.fmudanyali.scenes;
 
 import com.fmudanyali.Main;
-import com.fmudanyali.Keyboard;
+import com.fmudanyali.Screen;
 
 import org.libsdl.api.render.*;
 import org.libsdl.api.surface.SDL_Surface;
@@ -26,13 +26,12 @@ import org.libsdl.api.surface.SDL_Surface;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.surface.SdlSurface.*;
-import static org.libsdl.api.scancode.SDL_Scancode.*;
 import static org.libsdl.api.event.SdlEvents.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 
 public class PauseMenu extends Scene {
     public static SDL_Surface textureSurface =
-        SDL_CreateRGBSurface(0, WIDTH, HEIGHT, 32, 0, 0, 0, 0);
+        SDL_CreateRGBSurface(0, Screen.WIDTH, Screen.HEIGHT, 32, 0, 0, 0, 0);
     public static SDL_Texture menuTexture;
     public static boolean escPressed = false;
 
