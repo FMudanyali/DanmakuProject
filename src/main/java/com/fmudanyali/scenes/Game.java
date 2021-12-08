@@ -25,10 +25,12 @@ import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 import static org.libsdl.api.render.SdlRender.*;
+import static org.libsdl.api.error.SdlError.SDL_GetError;
 
 public class Game extends Scene {
     public static boolean exit = false;
     public static boolean escPressed = false;
+    public int kek = 0;
 
     public Player player = new Player();
 
@@ -65,6 +67,13 @@ public class Game extends Scene {
 
         player.movement();
         Screen.scroll();
+        /*
+        ++kek;
+        if(kek == 60){
+            System.out.println(SDL_GetError());
+            kek = 0;
+        }
+        */
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, Screen.wallpaper, null, null);

@@ -29,7 +29,7 @@ public class Main {
         if (RestartJVM.restartJVM()) {
             return;
         }
-
+        Render.init();
         Screen.init();
         scenes.push(new Game());
 
