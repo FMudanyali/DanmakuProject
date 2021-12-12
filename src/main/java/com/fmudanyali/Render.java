@@ -44,7 +44,7 @@ public class Render {
             WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
-        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "2");
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
         renderer = 
             SDL_CreateRenderer(Render.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);

@@ -25,21 +25,19 @@ import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 import static org.libsdl.api.render.SdlRender.*;
-import static org.libsdl.api.error.SdlError.SDL_GetError;
+//import static org.libsdl.api.error.SdlError.SDL_GetError;
 
 public class Game extends Scene {
-    public static boolean exit = false;
     public static boolean escPressed = false;
-    public int kek = 0;
-
-    public Player player = new Player();
+    int kek = 0;
+    private Player player = new Player();
 
     public Game() throws Exception{
         Screen.makeBackground("scene1/tile.bmp");
     }
 
     @Override
-    public void loop(){
+    public void loop() throws Exception{
         while(SDL_PollEvent(Main.e) != 0){
             switch(Main.e.type){
                 case SDL_QUIT:
@@ -67,13 +65,11 @@ public class Game extends Scene {
 
         player.movement();
         Screen.scroll();
-        /*
         ++kek;
         if(kek == 60){
-            System.out.println(SDL_GetError());
+            System.out.println(escPressed);
             kek = 0;
         }
-        */
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, Screen.wallpaper, null, null);

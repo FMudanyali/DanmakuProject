@@ -18,5 +18,5 @@
 package com.fmudanyali.scenes;
 
 public abstract class Scene {
-    public abstract void loop();
+    public abstract void loop() throws Exception;
 }

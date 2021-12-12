@@ -19,7 +19,9 @@ package com.fmudanyali.scenes;
 
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
+import com.fmudanyali.FileLoader;
 
+import org.libsdl.api.rect.SDL_Rect;
 import org.libsdl.api.render.*;
 import org.libsdl.api.surface.SDL_Surface;
 
@@ -30,18 +32,36 @@ import static org.libsdl.api.event.SdlEvents.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 
 public class PauseMenu extends Scene {
-    public static SDL_Surface textureSurface =
-        SDL_CreateRGBSurface(0, Screen.WIDTH, Screen.HEIGHT, 32, 0, 0, 0, 0);
-    public static SDL_Texture menuTexture;
-    public static boolean escPressed = false;
+    private SDL_Surface tempSurface;
+    private SDL_Texture contTexture, exitTexture, background;
+    private SDL_Rect contPos = new SDL_Rect();
+    private SDL_Rect exitPos = new SDL_Rect();
+    private SDL_Rect buttonSize = new SDL_Rect();
+    private boolean escPressed = false;
+    private boolean enterPressed = false;
+    private boolean wPressed = false;
+    private boolean sPressed = false;
+    private int selection = 0;
 
-    public PauseMenu(){
-        SDL_FillRect(textureSurface, null, 0);
-        menuTexture = SDL_CreateTextureFromSurface(renderer, textureSurface);
+    public PauseMenu() throws Exception{
+        buttonSize.x = buttonSize.y = 0;
+        buttonSize.w = contPos.w = exitPos.w = 150;
+        buttonSize.h = contPos.h = exitPos.h = 100;
+        contPos.x = (Screen.WIDTH - Screen.CANV_W)/2 + 10;
+        contPos.y = (Screen.HEIGHT - Screen.CANV_H)/2 + 10;
+        exitPos.x = (Screen.WIDTH - Screen.CANV_W)/2 + 10;
+        exitPos.y = (Screen.HEIGHT - Screen.CANV_H)/2 + 120;
+
+        tempSurface = SDL_LoadBMP(FileLoader.getFilePath("pause.bmp"));
+        background = SDL_CreateTextureFromSurface(renderer, tempSurface);
+        tempSurface = SDL_LoadBMP(FileLoader.getFilePath("continuesel.bmp"));
+        contTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+        tempSurface = SDL_LoadBMP(FileLoader.getFilePath("exit.bmp"));
+        exitTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
     }
 
     @Override
-    public void loop(){
+    public void loop() throws Exception{
         while(SDL_PollEvent(Main.e) != 0){
             switch(Main.e.type){
                 case SDL_QUIT:
@@ -55,6 +75,26 @@ public class PauseMenu extends Scene {
                                 escPressed = true;
                             }
                             break;
+                        case SDLK_RETURN:
+                            if(!enterPressed){
+                                confirm();
+                                enterPressed = true;
+                            }
+                            break;
+                        case SDLK_w:
+                            if(!wPressed){
+                                selection = Math.min(selection - 1, 1);
+                                wPressed = true;
+                                updateButtons();
+                            }
+                            break;
+                        case SDLK_s:
+                            if(!sPressed){
+                                selection = Math.min(selection + 1, 1);
+                                sPressed = true;
+                                updateButtons();
+                            }
+                            break;
                     }
                     break;
                 case SDL_KEYUP:
@@ -62,13 +102,55 @@ public class PauseMenu extends Scene {
                         case SDLK_ESCAPE:
                             escPressed = false;
                             break;
+                        case SDLK_RETURN:
+                            enterPressed = false;
+                            break;
+                        case SDLK_w:
+                            wPressed = false;
+                            break;
+                        case SDLK_s:
+                            sPressed = false;
+                            break;
                     }
                     break;
             }
         }
 
         SDL_RenderClear(renderer);
-        SDL_RenderCopy(renderer, menuTexture, null, null);
+        SDL_RenderCopy(renderer, Screen.wallpaper, null, null);
+        SDL_RenderCopy(renderer, background, Screen.canvas, Screen.canvasPos);
+        SDL_RenderCopy(renderer, contTexture, buttonSize, contPos);
+        SDL_RenderCopy(renderer, exitTexture, buttonSize, exitPos);
         SDL_RenderPresent(renderer);
+    }
+
+    private void updateButtons() throws Exception{
+        switch(selection){
+            case 0:
+                tempSurface = SDL_LoadBMP(FileLoader.getFilePath("continuesel.bmp"));
+                contTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+                tempSurface = SDL_LoadBMP(FileLoader.getFilePath("exit.bmp"));
+                exitTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+                break;
+            case 1:
+                tempSurface = SDL_LoadBMP(FileLoader.getFilePath("continue.bmp"));
+                contTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+                tempSurface = SDL_LoadBMP(FileLoader.getFilePath("exitsel.bmp"));
+                exitTexture = SDL_CreateTextureFromSurface(renderer, tempSurface);
+                break;
+        }
+    }
+
+    private void confirm(){
+        switch(selection){
+            case 0:
+                Main.scenes.pop();
+                Game.escPressed = false;
+                break;
+            case 1:
+                Main.scenes.pop();
+                Main.scenes.pop();
+                break;
+        }
     }
 }
