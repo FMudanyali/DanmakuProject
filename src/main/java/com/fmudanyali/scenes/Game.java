@@ -20,6 +20,7 @@ package com.fmudanyali.scenes;
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
 import com.fmudanyali.characters.Player;
+import com.fmudanyali.Audio;
 
 import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
@@ -34,6 +35,8 @@ public class Game extends Scene {
 
     public Game() throws Exception{
         Screen.makeBackground("scene1/tile.bmp");
+        Audio.queueAudio("80-search-intro.wav");
+        Audio.queueAudio("80-search-loop.wav");
     }
 
     @Override
@@ -65,11 +68,6 @@ public class Game extends Scene {
 
         player.movement();
         Screen.scroll();
-        ++kek;
-        if(kek == 60){
-            System.out.println(escPressed);
-            kek = 0;
-        }
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, Screen.wallpaper, null, null);

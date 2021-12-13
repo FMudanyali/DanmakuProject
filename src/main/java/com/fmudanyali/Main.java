@@ -31,6 +31,7 @@ public class Main {
         }
         Render.init();
         Screen.init();
+        Audio.init();
         scenes.push(new MainMenu());
 
         while(!scenes.empty() && !exit){
@@ -38,5 +39,6 @@ public class Main {
             Keyboard.getKeyboardState();
             scenes.peek().loop();
         }
+        exit = true;
     }
 }
