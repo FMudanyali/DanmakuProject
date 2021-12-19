@@ -26,6 +26,7 @@ import org.libsdl.api.render.*;
 import org.libsdl.api.surface.SDL_Surface;
 
 import static com.fmudanyali.Render.*;
+import static com.fmudanyali.Audio.*;
 import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.surface.SdlSurface.*;
 import static org.libsdl.api.event.SdlEvents.*;
@@ -43,6 +44,7 @@ public class MainMenu extends Scene {
     private int selection = 0;
     
     public MainMenu() throws Exception{
+        Mix_PauseMusic();
         buttonSize.x = buttonSize.y = 0;
         buttonSize.w = startPos.w = exitPos.w = 150;
         buttonSize.h = startPos.h = exitPos.h = 100;

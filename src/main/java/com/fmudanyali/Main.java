@@ -31,7 +31,7 @@ public class Main {
         }
         Render.init();
         Screen.init();
-        Audio.init();
+        //Audio.init();
         scenes.push(new MainMenu());
 
         while(!scenes.empty() && !exit){

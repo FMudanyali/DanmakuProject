@@ -20,12 +20,14 @@ package com.fmudanyali.scenes;
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
 import com.fmudanyali.FileLoader;
+import com.fmudanyali.scenes.MainMenu;
 
 import org.libsdl.api.rect.SDL_Rect;
 import org.libsdl.api.render.*;
 import org.libsdl.api.surface.SDL_Surface;
 
 import static com.fmudanyali.Render.*;
+import static com.fmudanyali.Audio.*;
 import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.surface.SdlSurface.*;
 import static org.libsdl.api.event.SdlEvents.*;
@@ -72,6 +74,7 @@ public class PauseMenu extends Scene {
                         case SDLK_ESCAPE:
                             if(!escPressed){
                                 Main.scenes.pop();
+                                Mix_VolumeMusic(128);
                                 escPressed = true;
                             }
                             break;
@@ -141,15 +144,18 @@ public class PauseMenu extends Scene {
         }
     }
 
-    private void confirm(){
+    private void confirm() throws Exception{
         switch(selection){
             case 0:
                 Main.scenes.pop();
+                Mix_VolumeMusic(128);
                 Game.escPressed = false;
                 break;
             case 1:
                 Main.scenes.pop();
                 Main.scenes.pop();
+                Main.scenes.pop();
+                Main.scenes.push(new MainMenu());
                 break;
         }
     }

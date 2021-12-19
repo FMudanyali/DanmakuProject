@@ -17,11 +17,12 @@
 
 package com.fmudanyali.scenes;
 
+import com.fmudanyali.FileLoader;
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
 import com.fmudanyali.characters.Player;
-import com.fmudanyali.Audio;
 
+import static com.fmudanyali.Audio.*;
 import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
@@ -35,8 +36,22 @@ public class Game extends Scene {
 
     public Game() throws Exception{
         Screen.makeBackground("scene1/tile.bmp");
-        Audio.queueAudio("80-search-intro.wav");
-        Audio.queueAudio("80-search-loop.wav");
+        Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+        Mix_VolumeMusic(128);
+        Thread thread = new Thread(){
+            public void run(){
+                try {
+                    Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-intro.wav")), 1);
+                    while(Mix_PlayingMusic() == 1);
+                    Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-loop.wav")), -1);
+                    Thread.currentThread().interrupt();
+                    return;
+                } catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
     }
 
     @Override
@@ -51,6 +66,7 @@ public class Game extends Scene {
                         case SDLK_ESCAPE:
                             if(!escPressed){
                                 Main.scenes.push(new PauseMenu());
+                                Mix_VolumeMusic(30);
                                 escPressed = true;
                             }
                             break;
