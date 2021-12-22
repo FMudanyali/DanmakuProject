@@ -18,22 +18,26 @@
 package com.fmudanyali.scenes;
 
 import com.fmudanyali.FileLoader;
-import com.fmudanyali.Render;
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
 import com.fmudanyali.characters.Player;
+import com.fmudanyali.bullets.PlayerBullet;
 
 import static com.fmudanyali.Audio.*;
 import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 import static org.libsdl.api.render.SdlRender.*;
-import static org.libsdl.api.surface.SdlSurface.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class Game extends Scene {
     public static boolean escPressed = false;
     int kek = 0;
     private Player player = new Player();
+    public static List<PlayerBullet> playerBullets = new ArrayList<>();
     private static Thread thread;
     private static Runnable runnable = new Runnable() {
         public void run(){
@@ -101,6 +105,17 @@ public class Game extends Scene {
         SDL_RenderCopy(renderer, player.texture, player.shipFrame, player.position);
         SDL_RenderCopy(renderer, player.propeller, player.propellerFrame, player.propellerPos);
         SDL_RenderCopy(renderer, player.shooter, player.shooterFrame, player.shooterPos);
+
+        for(Iterator<PlayerBullet> bulletIterator = playerBullets.iterator(); bulletIterator.hasNext();){
+            PlayerBullet b = bulletIterator.next();
+            b.fly();
+            if(b.position.y < 30){
+                bulletIterator.remove();
+            } else {
+                SDL_RenderCopy(renderer, PlayerBullet.texture, null, b.position);
+            }
+        }
+
         SDL_RenderPresent(renderer);
         player.shiftFrame();
     }

@@ -22,6 +22,8 @@ import com.fmudanyali.Render;
 import com.fmudanyali.Screen;
 import com.fmudanyali.Keyboard;
 import com.fmudanyali.Time;
+import com.fmudanyali.bullets.PlayerBullet;
+import com.fmudanyali.scenes.Game;
 
 import org.libsdl.api.rect.SDL_Rect;
 import org.libsdl.api.render.SDL_Texture;
@@ -37,6 +39,7 @@ public class Player extends Character {
     public SDL_Texture shooter;
     public int frame = 0;
     public int roll = 0;
+    public int cooldown = 0;
 
     public SDL_Rect propellerPos = new SDL_Rect();
     public SDL_Rect shooterPos = new SDL_Rect();
@@ -167,21 +170,12 @@ public class Player extends Character {
 
         if(roll > 0){
             shipFrame.x = shipFrame.y = 0;
-        } if(roll > 8){
-            shipFrame.x = 32;
         } if(roll > 15){
-            shipFrame.x = 0;
-            shipFrame.y = 32;
-        } if(roll > 23){
             shipFrame.x = 32;
         } if(roll > 30){
-            shipFrame.x = shipFrame.y = 0;
-        } if(roll > 38){
-            shipFrame.x = 32;
-        } if(roll > 45){
             shipFrame.x = 0;
             shipFrame.y = 32;
-        } if (roll > 53){
+        } if(roll > 45){
             shipFrame.x = 32;
         }
 
@@ -192,20 +186,20 @@ public class Player extends Character {
         if(Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
             speed = 1.5;
         }else{
-            speed = 3;
+            speed = 2;
         }
 
         if(Keyboard.getKeyState(SDL_SCANCODE_A) | Keyboard.getKeyState(SDL_SCANCODE_LEFT)){
-            position.x = Math.max(position.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x);
-            shooterPos.x = Math.max(shooterPos.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + 16 - 4);
-            propellerPos.x = Math.max(propellerPos.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + 16 - 5);
-            roll = Math.floorMod(roll + (int)(Time.deltaTime * 0.1),60);
+            position.x = Math.max(position.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x - 5);
+            shooterPos.x = Math.max(shooterPos.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + 16 - 4 - 5);
+            propellerPos.x = Math.max(propellerPos.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + 16 - 5 - 5);
+            roll = Math.floorMod(roll + (int)(speed * Time.deltaTime * 0.1),60);
         }
         if(Keyboard.getKeyState(SDL_SCANCODE_D) | Keyboard.getKeyState(SDL_SCANCODE_RIGHT)){
-            position.x = Math.min(position.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 32);
-            shooterPos.x = Math.min(shooterPos.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 16 - 4);
-            propellerPos.x = Math.min(propellerPos.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 16 - 5);
-            roll = Math.floorMod(roll - (int)(Time.deltaTime * 0.1),60);
+            position.x = Math.min(position.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 27);
+            shooterPos.x = Math.min(shooterPos.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 16 - 4 + 5);
+            propellerPos.x = Math.min(propellerPos.x + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + Screen.canvas.w - 16 - 5 + 5);
+            roll = Math.floorMod(roll - (int)(speed * Time.deltaTime * 0.1),60);
         }
         if(Keyboard.getKeyState(SDL_SCANCODE_W) | Keyboard.getKeyState(SDL_SCANCODE_UP)){
             position.y = Math.max(position.y - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.y + 6);
@@ -217,5 +211,24 @@ public class Player extends Character {
             shooterPos.y = Math.min(shooterPos.y + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.y + Screen.canvas.h - 32 - 8);
             propellerPos.y = Math.min(propellerPos.y + (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.y + Screen.canvas.h - 8);
         }
+        if(Keyboard.getKeyState(SDL_SCANCODE_SPACE) && cooldown == 0 && !Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
+            Game.playerBullets.add(new PlayerBullet(position, -2, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 4, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 10, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 17, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 23, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 29, 0));
+            cooldown = 1;
+        }
+        if(Keyboard.getKeyState(SDL_SCANCODE_SPACE) && cooldown == 0 && Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
+            Game.playerBullets.add(new PlayerBullet(position, 2, 9));
+            Game.playerBullets.add(new PlayerBullet(position, 6, 6));
+            Game.playerBullets.add(new PlayerBullet(position, 10, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 17, 0));
+            Game.playerBullets.add(new PlayerBullet(position, 21, 6));
+            Game.playerBullets.add(new PlayerBullet(position, 25, 9));
+            cooldown = 1;
+        }
+        cooldown = Math.max(cooldown -1, 0);
     }
 }
