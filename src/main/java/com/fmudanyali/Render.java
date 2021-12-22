@@ -38,8 +38,8 @@ public class Render {
     public static SDL_Renderer renderer;
     public static int bgw, bgh;
 
-    public static void init(){
-        window = SDL_CreateWindow("DanmakuProject SDL",
+    static {
+        window = SDL_CreateWindow("DanmakuProject SDL2",
             SDL_WINDOWPOS_CENTERED(), SDL_WINDOWPOS_CENTERED(),
             WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 

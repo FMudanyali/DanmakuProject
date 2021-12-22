@@ -22,6 +22,9 @@ import org.libsdl.api.render.SDL_Texture;
 import org.libsdl.api.surface.SDL_Surface;
 
 import static org.libsdl.api.surface.SdlSurface.*;
+
+import com.fmudanyali.characters.Player;
+
 import static org.libsdl.api.render.SdlRender.*;
 
 public class Screen {
@@ -35,8 +38,9 @@ public class Screen {
     public static SDL_Texture tile, background, wallpaper;
     public static SDL_Surface tempSurface;
     
-    public static void init() throws Exception{
-        canvas.x = canvas.y = 0;
+    static {
+        canvas.x = 12;
+        canvas.y = 0;
         canvas.h = canvasPos.h = CANV_H;
         canvas.w = canvasPos.w = CANV_W;
         // Center canvas to the screen
@@ -50,17 +54,18 @@ public class Screen {
         tempSurface = null;
     }
 
-    public static void makeBackground(String filename) throws Exception{
+    public static void makeBackground(String filename){
         // Load tile
         tempSurface = SDL_LoadBMP(FileLoader.getFilePath(filename));
         tile = SDL_CreateTextureFromSurface(Render.renderer, tempSurface);
         // Clear surface
         tempSurface = null;
         // Create background from tiles
-        background = Render.createBackgroundFromTexture(Render.renderer, tile, 12, 30);
+        background = Render.createBackgroundFromTexture(Render.renderer, tile, 1, 2);
     }
 
-    public static void scroll(){
+    public static void scroll(Player player){
         canvas.y = Math.floorMod(canvas.y - (int)(Time.deltaTime * 0.1), Render.bgh - canvas.h);
+        canvas.x = (int)(12 + (player.position.x - 464)/13);
     }
 }

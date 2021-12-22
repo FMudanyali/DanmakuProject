@@ -29,9 +29,8 @@ public class Main {
         if (RestartJVM.restartJVM()) {
             return;
         }
-        Render.init();
-        Screen.init();
-        //Audio.init();
+
+        Audio.Mix_OpenAudio(44100, Audio.MIX_DEFAULT_FORMAT, 2, 2048);
         scenes.push(new MainMenu());
 
         while(!scenes.empty() && !exit){
@@ -40,5 +39,6 @@ public class Main {
             scenes.peek().loop();
         }
         exit = true;
+        System.exit(0);
     }
 }

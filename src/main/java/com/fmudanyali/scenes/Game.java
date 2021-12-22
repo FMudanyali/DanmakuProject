@@ -18,6 +18,7 @@
 package com.fmudanyali.scenes;
 
 import com.fmudanyali.FileLoader;
+import com.fmudanyali.Render;
 import com.fmudanyali.Main;
 import com.fmudanyali.Screen;
 import com.fmudanyali.characters.Player;
@@ -27,35 +28,44 @@ import static org.libsdl.api.event.SdlEvents.*;
 import static com.fmudanyali.Render.*;
 import static org.libsdl.api.keycode.SDL_Keycode.*;
 import static org.libsdl.api.render.SdlRender.*;
-//import static org.libsdl.api.error.SdlError.SDL_GetError;
+import static org.libsdl.api.surface.SdlSurface.*;
 
 public class Game extends Scene {
     public static boolean escPressed = false;
     int kek = 0;
     private Player player = new Player();
-
-    public Game() throws Exception{
-        Screen.makeBackground("scene1/tile.bmp");
-        Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-        Mix_VolumeMusic(128);
-        Thread thread = new Thread(){
-            public void run(){
-                try {
-                    Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-intro.wav")), 1);
-                    while(Mix_PlayingMusic() == 1);
-                    Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-loop.wav")), -1);
-                    Thread.currentThread().interrupt();
-                    return;
-                } catch(Exception e){
-                    e.printStackTrace();
-                }
+    private static Thread thread;
+    private static Runnable runnable = new Runnable() {
+        public void run(){
+            try {
+                Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-intro.wav")), 1);
+                Thread.sleep(getMusicLengthInMilliseconds(FileLoader.getFilePath("80-search-intro.wav")));
+                Mix_PlayMusic(Mix_LoadMUS(FileLoader.getFilePath("80-search-loop.wav")), -1);
+                Thread.currentThread().interrupt();
+                return;
+            } catch(Exception e){
+                // Will throw sleep interrupted, which is what we want.
             }
-        };
+        }
+    };
+
+    public Game(){
+        Screen.makeBackground("shmap.bmp");
+        Mix_VolumeMusic(128);
+        try {
+            if(thread.getState() != Thread.State.TERMINATED){
+                thread.interrupt();
+            }
+        } catch (Exception e){
+            //
+        }
+        thread = new Thread(runnable);
         thread.start();
+        
     }
 
     @Override
-    public void loop() throws Exception{
+    public void loop(){
         while(SDL_PollEvent(Main.e) != 0){
             switch(Main.e.type){
                 case SDL_QUIT:
@@ -83,12 +93,15 @@ public class Game extends Scene {
         }
 
         player.movement();
-        Screen.scroll();
+        Screen.scroll(player);
 
         SDL_RenderClear(renderer);
         SDL_RenderCopy(renderer, Screen.wallpaper, null, null);
         SDL_RenderCopy(renderer, Screen.background, Screen.canvas, Screen.canvasPos);
-        SDL_RenderCopy(renderer, player.texture, null, player.position);
+        SDL_RenderCopy(renderer, player.texture, player.shipFrame, player.position);
+        SDL_RenderCopy(renderer, player.propeller, player.propellerFrame, player.propellerPos);
+        SDL_RenderCopy(renderer, player.shooter, player.shooterFrame, player.shooterPos);
         SDL_RenderPresent(renderer);
+        player.shiftFrame();
     }
 }

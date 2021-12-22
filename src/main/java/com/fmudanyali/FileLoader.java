@@ -25,13 +25,17 @@ import java.util.Objects;
  * @return path to the asset in the assets folder.
  */
 public class FileLoader {
-    public static String getFilePath(String fileName) throws Exception {
-        String protocol = FileLoader.class.getResource("").getProtocol();
-        if(Objects.equals(protocol, "jar")){
-            String jarPath = new File(FileLoader.class.getProtectionDomain().getCodeSource()
-            .getLocation().toURI()).getParentFile().getPath();
-            return jarPath + "/assets/" + fileName;
+    public static String getFilePath(String fileName){
+        try{
+            String protocol = FileLoader.class.getResource("").getProtocol();
+            if(Objects.equals(protocol, "jar")){
+                String jarPath = new File(FileLoader.class.getProtectionDomain().getCodeSource()
+                .getLocation().toURI()).getParentFile().getPath();
+                return jarPath + "/assets/" + fileName;
+            }
+            return System.getProperty("user.dir") + "/assets/" + fileName;
+        } catch (Exception e){
+            return "could not get filepath";
         }
-        return System.getProperty("user.dir") + "/assets/" + fileName;
     }
 }
