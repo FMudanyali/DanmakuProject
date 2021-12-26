@@ -33,24 +33,50 @@ import static org.libsdl.api.hints.SdlHintsConst.*;
 import static org.libsdl.api.hints.SdlHints.*;
 import static org.libsdl.api.render.SdlRender.SDL_RenderSetLogicalSize;
 
+/**
+ * <h3>Render Class</h3>
+ * This class contains and initializes the SDL_Window and SDL_Renderer pointers,
+ * it also has a method to create a continuous background from given texture.
+ * 
+ * @author Furkan Mudanyali
+ * @version 0.2.0
+ * @since 2021-12-01
+ */
 public class Render {
     public static SDL_Window window;
     public static SDL_Renderer renderer;
     public static int bgw, bgh;
 
+    // Initialize SDL_Window and SDL_Renderer
     static {
+        // Create window
         window = SDL_CreateWindow("DanmakuProject SDL2",
             SDL_WINDOWPOS_CENTERED(), SDL_WINDOWPOS_CENTERED(),
             WIDTH, HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL);
 
+        // Hints for the renderer
         SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
         SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
+        // Create renderer
         renderer = 
-            SDL_CreateRenderer(Render.window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+            SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
+        // Make content scale according to the window size while maintaining the aspect ratio.
         SDL_RenderSetLogicalSize(renderer, Screen.WIDTH, Screen.HEIGHT);
     }
+
+    /**
+     * Creates a new row x col texture
+     * from the given texture by stitching
+     * it together.
+     * 
+     * @param renderer Renderer to be used
+     * @param texture Texture to be repeated
+     * @param cols How many columns of the texture
+     * @param rows How many rows of the texture
+     * @return
+     */
     public static SDL_Texture createBackgroundFromTexture(
         SDL_Renderer renderer, SDL_Texture texture, int cols, int rows
     ){

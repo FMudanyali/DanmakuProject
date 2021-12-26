@@ -33,7 +33,7 @@ import javax.sound.sampled.AudioSystem;
 /**
  * <h3>Audio Class</h3>
  * 
- * This class is a native wrapper for SDL2_Mixer,
+ * This class is a native JNA wrapper for SDL2_Mixer,
  * it also contains some additional methods
  * 
  * @author Furkan Mudanyali
@@ -127,14 +127,21 @@ public class Audio {
     public static int Mix_PlayChannel(int channel, Pointer chunk, int loops){
         return Mix_PlayChannelTimed(channel, chunk, loops, -1);
     }
+
     // Methods
 
     /**
+     * Returns WAV music length in milliseconds.
+     * 
+     * <p>
+     * 
      * Credits to mdma from stackoverflow
+     * <p>
      * https://stackoverflow.com/a/3009973
      * 
      * @param filepath WAV file path
-     * @return length in milliseconds
+     * @return length in milliseconds, -1 if can't
+     * open file.
      */
     public static long getMusicLengthInMilliseconds(String filepath){
         try {

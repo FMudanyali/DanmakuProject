@@ -21,10 +21,25 @@ import java.io.File;
 import java.util.Objects;
 
 /**
- * @param fileName filename to get path of
- * @return path to the asset in the assets folder.
+ * <h3>File Loader Class</h3>
+ * 
+ * A class that contains static methods for file path
+ * operations for SDL2. Since SDL2 cannot access the
+ * virtual filesystem inside the .jar package, SDL2 files
+ * must be kept in a seperate folder along with the .jar.
+ * 
+ * @author Furkan Mudanyali
+ * @version 1.0.0
+ * @since 2021-12-01
  */
 public class FileLoader {
+    /**
+     * Returns absolute path to the file from the assets folder.
+     * 
+     * @param fileName filename to get path of
+     * @return path to the asset in the assets folder,
+     * null on any kind of I/O error.
+     */
     public static String getFilePath(String fileName){
         try{
             String protocol = FileLoader.class.getResource("").getProtocol();
@@ -35,7 +50,7 @@ public class FileLoader {
             }
             return System.getProperty("user.dir") + "/assets/" + fileName;
         } catch (Exception e){
-            return "could not get filepath";
+            return null;
         }
     }
 }

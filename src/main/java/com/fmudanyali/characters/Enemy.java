@@ -18,5 +18,5 @@
 package com.fmudanyali.characters;
 
 public class Enemy extends Character {
-    
+    // TODO: Implement
 }

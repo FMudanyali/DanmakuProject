@@ -25,10 +25,22 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
 /**
- * Credits to kappa From
+ * <h3>RestartJVM Class</h3>
+ * 
+ * Has a single function that restarts JVM on macOS
+ * if JVM is not launched with -XstartOnFirstThread arg
+ * and launches it with it.
+ * 
+ * <p>
+ * 
+ * Credits to kappa from jvm-gaming.org
+ * <p>
  * https://jvm-gaming.org/t/starting-jvm-on-mac-with-xstartonfirstthread-programmatically/57547
+ * 
+ * @author kappa
+ * @version 1.0.0
+ * @since 2016-08-26
  */
-
 public class RestartJVM {
 	public static boolean restartJVM() {
 		

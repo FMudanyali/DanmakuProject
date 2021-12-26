@@ -20,13 +20,28 @@ package com.fmudanyali;
 import static org.libsdl.api.keyboard.SdlKeyboard.*;
 import com.sun.jna.ptr.ByteByReference;
 
+/**
+ * <h3>Keyboard Class</h3>
+ * 
+ * A class to simplify keyboard functions.
+ * 
+ * @author Furkan Mudanyali
+ * @version 1.0.0
+ * @since 2021-12-01
+ */
 public class Keyboard {
+    // Basically array pointer
     public static ByteByReference keyboard = new ByteByReference();
 
     public static void getKeyboardState(){
         keyboard = SDL_GetKeyboardState(null);
     }
-
+    /**
+     * Checks if given index of the keyboard array is true or not.
+     * 
+     * @param key Index of the key in the keyboard array.
+     * @return true if key is pressed, false if not.
+     */
     public static boolean getKeyState(int key){
         return keyboard.getPointer().getByte(key) == 1;
     }

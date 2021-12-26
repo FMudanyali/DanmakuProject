@@ -27,6 +27,16 @@ import com.fmudanyali.characters.Player;
 
 import static org.libsdl.api.render.SdlRender.*;
 
+/**
+ * <h3>Screen Class</h3>
+ * 
+ * This class contains information about the game screen
+ * It also has a method to set its background texture, and scroll it.
+ * 
+ * @author Furkan Mudanyali
+ * @version 0.2.0
+ * @since 2021-12-08
+ */
 public class Screen {
     public static final int WIDTH = 960;
     public static final int HEIGHT = 540;
@@ -38,6 +48,7 @@ public class Screen {
     public static SDL_Texture tile, background, wallpaper;
     public static SDL_Surface tempSurface;
     
+    // Calculate positions and load wallpaper image.
     static {
         canvas.x = 12;
         canvas.y = 0;
@@ -54,6 +65,10 @@ public class Screen {
         tempSurface = null;
     }
 
+    /**
+     * Loads the given filepath to the background.
+     * @param filename file path of the image.
+     */
     public static void makeBackground(String filename){
         // Load tile
         tempSurface = SDL_LoadBMP(FileLoader.getFilePath(filename));
@@ -64,6 +79,12 @@ public class Screen {
         background = Render.createBackgroundFromTexture(Render.renderer, tile, 1, 2);
     }
 
+    /**
+     * Scrolls the background vertically and horizontally.
+     * Horizontal scroll is based on the player position to 
+     * create a parallax effect.
+     * @param player
+     */
     public static void scroll(Player player){
         canvas.y = Math.floorMod(canvas.y - (int)(Time.deltaTime * 0.1), Render.bgh - canvas.h);
         canvas.x = (int)(12 + (player.position.x - 464)/13);

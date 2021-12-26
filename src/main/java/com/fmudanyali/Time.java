@@ -19,6 +19,16 @@ package com.fmudanyali;
 
 import static org.libsdl.api.timer.SdlTimer.*;
 
+/**
+ * <h3>Time Class</h3>
+ * 
+ * Calculates the time difference between this frame
+ * and last frame, deltatime.
+ * 
+ * @author Furkan Mudanyali
+ * @version 1.0.0
+ * @since 2021-12-03
+ */
 public class Time {
     public static int lastTime = 0;
     public static int currentTime = 0;

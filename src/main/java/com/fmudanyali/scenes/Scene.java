@@ -17,6 +17,20 @@
 
 package com.fmudanyali.scenes;
 
+/**
+ * <h3>Scene Class</h3>
+ * 
+ * This class is an abstract for other scenes and makes able to
+ * keep all the different kind of scenes on a single stack.
+ * 
+ * @author Furkan Mudanyali
+ * @version 1.0.0
+ * @since 2021-12-04
+ */
 public abstract class Scene {
+    /**
+     * By design, this function will be
+     * executed each game frame.
+     */
     public abstract void loop();
 }

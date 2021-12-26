@@ -32,7 +32,19 @@ import static org.libsdl.api.surface.SdlSurface.*;
 import static org.libsdl.api.render.SdlRender.*;
 import static org.libsdl.api.scancode.SDL_Scancode.*;
 
+/**
+ * <h3>Player Class</h3>
+ * 
+ * This class extends on the character class and has all the
+ * bells and whistles such as handling movement, shooting bullets,
+ * animated sprites etc.
+ * 
+ * @author Furkan Mudanyali
+ * @version 0.9.0
+ * @since 2021-12-08
+ */
 public class Player extends Character {
+    // Variables
     public int lives;
     public double speed;
     public SDL_Texture propeller;
@@ -40,14 +52,16 @@ public class Player extends Character {
     public int frame = 0;
     public int roll = 0;
     public int cooldown = 0;
-
+    // New position rectangles for additional parts
     public SDL_Rect propellerPos = new SDL_Rect();
     public SDL_Rect shooterPos = new SDL_Rect();
-
+    // These rectangles are used for shifting 
+    // sprite animation.
     public SDL_Rect shipFrame = new SDL_Rect();
     public SDL_Rect propellerFrame = new SDL_Rect();
     public SDL_Rect shooterFrame = new SDL_Rect();
-
+    
+    // Load the textures and set the positions.
     public Player(){
         lives = 3;
         tempSurface = SDL_LoadBMP(FileLoader.getFilePath("player/ship.bmp"));
@@ -167,7 +181,8 @@ public class Player extends Character {
                 propellerFrame.x = 10;
                 break;
         }
-
+        // Not a switch as DeltaTime does not provide
+        // linear increase.
         if(roll > 0){
             shipFrame.x = shipFrame.y = 0;
         } if(roll > 15){
@@ -178,17 +193,23 @@ public class Player extends Character {
         } if(roll > 45){
             shipFrame.x = 32;
         }
-
+        // Frame is kept in 600 instead of 60
+        // to be accurate with the varying framerate
+        // animations.
         frame = (frame+10)%600;
     }
 
+    /**
+     * Changes positions depending on the keyboard state.
+     */
     public void movement(){
+        // If shift is pressed, slow down the player.
         if(Keyboard.getKeyState(SDL_SCANCODE_LSHIFT)){
             speed = 1.5;
         }else{
             speed = 2;
         }
-
+        // Bunch of mathematical mumbo jumbo.
         if(Keyboard.getKeyState(SDL_SCANCODE_A) | Keyboard.getKeyState(SDL_SCANCODE_LEFT)){
             position.x = Math.max(position.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x - 5);
             shooterPos.x = Math.max(shooterPos.x - (int)(speed * Time.deltaTime * 0.1), Screen.canvasPos.x + 16 - 4 - 5);
@@ -227,7 +248,8 @@ public class Player extends Character {
             Game.playerBullets.add(new PlayerBullet(position, 17, 0));
             Game.playerBullets.add(new PlayerBullet(position, 21, 6));
             Game.playerBullets.add(new PlayerBullet(position, 25, 9));
-            cooldown = 1;
+            // Cooldown is used to prevent overshooting.
+            cooldown = 3;
         }
         cooldown = Math.max(cooldown -1, 0);
     }

@@ -21,6 +21,16 @@ import org.libsdl.api.rect.SDL_Rect;
 import org.libsdl.api.render.SDL_Texture;
 import org.libsdl.api.surface.SDL_Surface;
 
+/**
+ * <h3>Character Superclass</h3>
+ * 
+ * This class provides essentials that a character
+ * should require.
+ * 
+ * @author Furkan Mudanyali
+ * @version 1.0.0
+ * @since 2021-12-08
+ */
 public class Character {
     public SDL_Rect position = new SDL_Rect();
     public SDL_Texture texture = new SDL_Texture();
